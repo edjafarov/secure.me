@@ -6,7 +6,7 @@
 
 ### expamples
 If you need to restrict access to all of your app's routes at once ```secure.secureRoutes(app);```. 
-You still can open routes publically by adding free middleware for the route.
+You still can open routes for public by adding free middleware for the route.
 
 ```javascript
 var app = express();

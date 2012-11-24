@@ -34,4 +34,8 @@ app.get("/shop", freeAccess, shop);
 app.listen(PORT);
 ```
 
+### author
+Eldar Djafarov <djkojb@gmail.com>
 
+### license
+MIT

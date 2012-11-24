@@ -1,18 +1,29 @@
 {
   "name": "secure.me",
-  "version": "0.0.1",
-  "description": "security helper",
-  "main": "secure.me.js",
+  "version": "0.1.0",
+  "description": "express helper that allows to setup security middleware for all routes at once",
+  "main": "./secure.me.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node ./node_modules/mocha/bin/mocha"
+  },
+  "dependencies":{
+    "underscore":"latest"
+  },
+  "devDependencies":{
+    "mocha":"latest",
+    "express":"latest",
+    "chai":"latest",
+    "request":"latest"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/edjafarov/secure.me.git"
   },
   "keywords": [
-    "security"
+    "security",
+    "express",
+    "middleware"
   ],
   "author": "Eldar Djafarov <djkojb@gmail.com>",
-  "license": "BSD"
+  "license": "MIT"
 }

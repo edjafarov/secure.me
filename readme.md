@@ -12,8 +12,8 @@ You still can open routes for public by adding free middleware for the route.
 var app = express();
 var secure = secureMe();
 //setup security/free middlewares
-secure.setSecurity(ensureUser);
-secure.setFree(freeAccess);
+secure.setMiddlewares([freeAccess]);
+secure.setDefault(ensureUser);
 
 function ensureUser(req, res, next){
   // check the user next() if passed, 403 if not

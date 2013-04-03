@@ -8,8 +8,8 @@ describe("secure me #integration", function(){
   before(function(done){
     var app = express();
     var secure = secureMe();
-    secure.setSecurity(secMiddleware);
-    secure.setFree(freeMiddleware);
+    secure.setMiddlewares([freeMiddleware]);
+    secure.setDefault(secMiddleware);
     function secMiddleware(req, res, next){
       if(req.query.pwd === "password"){
         req.user = "user";

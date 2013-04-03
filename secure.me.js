@@ -1,104 +1,71 @@
 var _ = require("underscore");
 
 var secureMe = function(){ 
-  var securityMiddleware = null;
-  var freeMiddleware = null;
-  
+  var securityMiddlewares = [];
+  var defaultMiddleware = null;
   return {
     // security middleware setter
-    setSecurity : function(middleware){
-      securityMiddleware = middleware;
-      securityMiddleware.secure = true;
+    setMiddlewares : function(middlewares){
+      _(middlewares).each(function(middleware){
+        middleware._secureme = true;
+      });
+      securityMiddlewares = middlewares;
     },
-    // free middleware setter
-    setFree : function(middleware){
-      freeMiddleware = middleware;
-      freeMiddleware.free = true;
+    setDefault: function(middleware){
+      defaultMiddleware = middleware;
+      defaultMiddleware._secureme = true;
     },
     // will make all routes secure besides those that have "guest middleware"
     secureRoutes : function(app){
       _.each(app.routes, eachRouteType);
-      routesWatcher(app, eachRoute);
+      appWrapper(app);
       return app;
+      
       function eachRouteType(routeType){
         _.each(routeType, eachRoute);
       }
+      
       function eachRoute(route){
-        if(!isFree(route)){
-          route.callbacks.unshift(securityMiddleware);
-        }
-        return route;
-      }
-    },
-    // will make all routes free besides those that are secured by security middleware
-    freeRoutes : function(app){
-      _.each(app.routes, eachRouteType);
-      routesWatcher(app, eachRoute);
-      return app;
-      function eachRouteType(routeType){
-        _.each(routeType, eachRoute);
-      }
-      function eachRoute(route){
-        if(!isSecure(route)){
-          route.callbacks.unshift(freeMiddleware);
+        if(!isSecureMe(route)){
+          route.callbacks.unshift(defaultMiddleware);
         }
         return route;
       }
     }
   }
-}
 
 
-function isFree(route){
-  var freeMiddlePosition = _.find(route.callbacks, findFree);
-  function findFree(callback){
-    return callback.free === true;
+
+  function isSecureMe(route){
+    var securityMiddle = _.find(route.callbacks, findSecurityMiddle);
+    return !!securityMiddle;
   }
-  return !!freeMiddlePosition;
-}
-function isSecure(route){
-  var secureMiddlePosition = _.find(route.callbacks, findSecure);
-  function findSecure(callback){
-    return callback.secure === true;
+
+
+  function appWrapper(app){
+    // check full list of methods
+    app.get = routeSetter(app.get);
+    app.put = routeSetter(app.put);
+    app.post = routeSetter(app.post);
+    app.del = routeSetter(app.del);
+    
+    function routeSetter(method){
+      return function(){
+        var args = Array.prototype.slice.call(arguments);
+        if(_.isFunction(args[args.length - 1])){
+          var securityMiddlewarePassed = _.find(args, findSecurityMiddle);
+          !securityMiddlewarePassed && args.splice(1, 0, defaultMiddleware); 
+        }
+        method.apply(app, args);
+      }
+    }
   }
-  return !!secureMiddlePosition;
+
+  function findSecurityMiddle(callback){
+    return callback._secureme === true;
+  }
+
 }
+
 
 module.exports = secureMe;
-
-function routesWatcher(app, transform){
-  // check full list of methods
-  app.routes.get = app.routes.get || [];
-  app.routes.put = app.routes.put || [];
-  app.routes.post = app.routes.post || [];
-  app.routes.delete = app.routes.delete || [];
-  _.each(app.routes, eachRouteType);
-  return app;
-  function eachRouteType(routeType){
-    bindWatcher(routeType, transform);
-  }
-}
-
-var oldPush = Array.prototype.push;
-
-Array.prototype.push = function(v){
-  if(this.watched && this.transform){
-    return oldPush.call(this, this.transform(v));
-  }
-  oldPush.call(this, v);
-}
-
-function bindWatcher(array, transform){
-  Object.defineProperty(array, "watched", {
-    enumerable: false,
-    configurable:false,
-    value: true
-  });
-  Object.defineProperty(array, "transform",{
-    enumerable: false,
-    configurable: false,
-    value: transform
-  });
-}
-
-

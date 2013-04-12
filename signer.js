@@ -59,7 +59,7 @@ module.exports = function(options){
     if(!_(object).isObject()){
       return false;
     }
-    if(object.__secureme) delete object.secureme;
+    if(object.__secureme) delete object.__secureme;
     var objectString = JSON.stringify(object);
     object.__secureme = generateToken(objectString, timeToLive);
     return object;

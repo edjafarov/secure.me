@@ -1,8 +1,10 @@
 var _ = require("underscore");
+var signer = require("./signer.js");
 
-var secureMe = function(){ 
+var secureMe = function(opts){ 
   var securityMiddlewares = [];
   var defaultMiddleware = null;
+
   return {
     // security middleware setter
     setMiddlewares : function(middlewares){
@@ -31,7 +33,8 @@ var secureMe = function(){
         }
         return route;
       }
-    }
+    },
+    signer: signer
   }
 
 
@@ -48,7 +51,8 @@ var secureMe = function(){
     app.put = routeSetter(app.put);
     app.post = routeSetter(app.post);
     app.del = routeSetter(app.del);
-    
+    app.all = routeSetter(app.all);
+
     function routeSetter(method){
       return function(){
         var args = Array.prototype.slice.call(arguments);

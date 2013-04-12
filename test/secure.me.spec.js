@@ -43,4 +43,11 @@ describe("secure me unit", function(){
     expect(app.routes.put[0].callbacks[0]).to.not.equal(secMiddleware);
     done();
   })
+  it(" secure.signer can sign and validate objects", function(done){
+    var signer = secureMe().signer({salt:"abcd"});
+    var secureobj = signer.sign({a:1,b:2});
+    var secondSigner = secureMe().signer({salt:"abcd"});
+    expect(secondSigner.validate(secureobj)).to.be.ok;
+    done();
+  })
 })

@@ -1,5 +1,6 @@
 var _ = require("underscore");
 var signer = require("./signer.js");
+var sharedSession = require("./sharedSession.js");
 
 var secureMe = function(opts){ 
   var securityMiddlewares = [];
@@ -34,7 +35,8 @@ var secureMe = function(opts){
         return route;
       }
     },
-    signer: signer
+    signer: signer,
+    sharedSession: sharedSession
   }
 
 

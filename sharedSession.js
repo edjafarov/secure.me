@@ -61,7 +61,7 @@ module.exports = function(opts){
         next();
       }
       function doRequest(url, data){
-        request.post(url, {form:data}, function(err, res, body){
+        request.post(url, {form:data, jar:false}, function(err, res, body){
           if(err){
             return console.log(err);
           }

@@ -9,18 +9,19 @@ describe("secure me #integration #sharedSession", function(){
   before(function(done){
     var app1 = express();
     var app2 = express();
-    
+    var sessStore1 = new express.session.MemoryStore;
+    var sessStore2 = new express.session.MemoryStore;
     app1.use(express.bodyParser());
     app1.use(express.cookieParser());
-    app1.use(express.session({secret:"1"}));
+    app1.use(express.session({secret:"1", store: sessStore1}));
     app2.use(express.bodyParser());
     app2.use(express.cookieParser());
-    app2.use(express.session({secret:"2"}));
+    app2.use(express.session({secret:"2", store: sessStore2}));
     
     sharedSession1 = secureMe().sharedSession({
       origin:"http://localhost:2346",
       baseUrl:"/_session/events",
-      store: new express.session.MemoryStore
+      store: sessStore1
     });
 
     var sessionEventsMiddleware1 = sharedSession1.middleware;
@@ -34,7 +35,7 @@ describe("secure me #integration #sharedSession", function(){
     sharedSession2 = secureMe().sharedSession({
       origin:"http://localhost:2347",
       baseUrl:"/_session/events",
-      store: new express.session.MemoryStore
+      store: sessStore2
     });
     var sessionEventsMiddleware2 = sharedSession2.middleware;
 

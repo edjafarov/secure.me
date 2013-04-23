@@ -1,9 +1,10 @@
 var Emitter = require('events').EventEmitter;
-var observer = new Emitter();
+
 var _ = require('underscore');
 var request = require('request');
 
 module.exports = function(opts){
+  var observer = new Emitter();
   if(!opts.store){
     throw new Error('you need to define sessoion store');
   }

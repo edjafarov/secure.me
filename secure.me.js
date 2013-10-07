@@ -73,9 +73,4 @@ var secureMe = function(opts){
 
 }
 
-var app = require('express')();
-app.set('a', 100);
-secureMe().secureRoutes(app);
-console.log(app.get('a'));
-
 module.exports = secureMe;

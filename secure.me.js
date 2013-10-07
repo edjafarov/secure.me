@@ -62,7 +62,7 @@ var secureMe = function(opts){
           var securityMiddlewarePassed = _.find(args, findSecurityMiddle);
           !securityMiddlewarePassed && args.splice(1, 0, defaultMiddleware); 
         }
-        method.apply(app, args);
+        return method.apply(app, args);
       }
     }
   }
@@ -73,5 +73,9 @@ var secureMe = function(opts){
 
 }
 
+var app = require('express')();
+app.set('a', 100);
+secureMe().secureRoutes(app);
+console.log(app.get('a'));
 
 module.exports = secureMe;
